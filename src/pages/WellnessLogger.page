@@ -1,0 +1,51 @@
+<apex:page title="Wellness Logger" showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" docType="html-5.0">
+    <head>
+        <apex:remoteObjects jsNamespace="RemoteObjectModel">
+            <apex:remoteObjectModel name="Wellness_Goal__c" fields="Id,Name,Points__c,Active__c"/>
+            <apex:remoteObjectModel name="Wellness_Activity__c" fields="Id,Wellness_Goal__c,User__c"/>
+        </apex:remoteObjects>
+
+        <apex:stylesheet value="{!URLFOR($Resource.Wellness, 'lib/ratchet/css/ratchet.css')}"/>
+
+        <script type="text/javascript">
+            // Need to get the User ID here so I can use it on included JS pages
+            var userId = "{!$User.Id}";
+        </script>
+
+        <apex:includeScript value="{!URLFOR($Resource.Wellness, 'js/jquery-1.11.1.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Wellness, 'js/angular.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Wellness, 'lib/ratchet/js/ratchet.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Wellness, 'js/wellness.js')}"/>
+    </head>
+    <body ng-app="WellnessApp">
+        <div ng-controller="LogController" ng-init="init()">
+            <div class="content-padded">
+                <h3>Log an Activity</h3>
+                <p>Select the activity that you completed.</p>
+            </div>
+            <input type="search" class="form-control" placeholder="Search" ng-model="searchGoals.Name"/>
+            <ul class="table-view">
+                <li class="table-view-cell" ng-repeat="goal in filteredGoals = (activeGoals | filter: searchGoals)">
+                    <a class="navigate-right" href="#modal-{{goal.Id}}">
+                        <span class="badge">{{goal.Points__c}} Points</span>
+                        {{goal.Name}}
+                    </a>
+                    <div id="modal-{{goal.Id}}" class="modal" style="margin-left: -15px"> <!-- margin offsets the padding of the <li> -->
+                        <header class="bar bar-nav">
+                            <a class="icon icon-close pull-right" href="#modal-{{goal.Id}}"></a>
+                            <h1 class="title">Log Activity</h1>
+                        </header>
+
+                        <div class="content content-padded">
+                            <h4>{{goal.Name}}</h4>
+                            <p>Completing this goal will give you <strong>{{goal.Points__c}} points</strong>.</p>
+                            <br/>
+                            <button class="btn btn-positive btn-block" ng-click="createActivity(goal)">I completed this activity!</button>
+                            <a class="btn btn-negative btn-block" href="#modal-{{goal.Id}}">Cancel</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </body>
+</apex:page>

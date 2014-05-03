@@ -1,0 +1,26 @@
+<apex:page controller="WellnessTrackerController" title="Wellness Tracker" showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" docType="html-5.0">
+    <head>
+        <apex:stylesheet value="{!URLFOR($Resource.Wellness, 'lib/ratchet/css/ratchet.css')}"/>
+
+        <apex:includeScript value="{!URLFOR($Resource.Wellness, 'js/jquery-1.11.1.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Wellness, 'js/angular.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Wellness, 'lib/ratchet/js/ratchet.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Wellness, 'js/wellness.js')}"/>
+    </head>
+    <body ng-app="WellnessApp">
+        <div ng-controller="LeaderController" ng-init="init()">
+            <div class="content-padded">
+                <h3>Weekly Leaderboard</h3>
+                <p>Wellness Activity leaders for the last 7 days.</p>
+            </div>
+            <ul class="table-view">
+                <li class="table-view-cell" ng-repeat="leader in weeklyLeaders">
+                    <a>
+                        <span class="badge">{{leader.points}} Points</span>
+                        {{$index + 1}}) {{leader.userName}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </body>
+</apex:page>
